@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Babel vs Edge Async Functions</title>
+    <link href="css/all.css" rel="stylesheet">
+</head>
+<body>
+<table class="table">
+    <tr>
+        <th>Sync</th>
+        <th>Async</th>
+    </tr>
+    <tr>
+        <td>
+            <button type="button" class="btn btn-primary btn-lg" id="edgeSync">Edge Sync</button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-info btn-lg" id="edgeAsync">Edge Async</button>
+        </td>
+    </tr>
+    </div>
+    <tr>
+        <td>
+            <button type="button" class="btn btn-success btn-lg" id="babelSync">Babel Sync</button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-warning btn-lg" id="babelAsync">Babel Async</button>
+        </td>
+    </tr>
+</table>
+<table class="table">
+    <tr>
+        <th>Log</th>
+    </tr>
+    <tr>
+        <td>
+            <textarea class="form-control" rows="6" id="log"></textarea>
+        </td>
+    </tr>
+</table>
+<table class="table">
+    <tr>
+        <th>SVG</th>
+        <th>JSON</th>
+    </tr>
+    <tr>
+        <td id="svg"></td>
+        <td id="json"></td>
+    </tr>
+</table>
+<script src="js/all.edge.js"></script>
+<script src="js/all.babel.js"></script>
+</body>
+</html>
