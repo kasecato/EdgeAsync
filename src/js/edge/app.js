@@ -51,27 +51,64 @@ window.onload = function () {
     const SVG_FILE = 'data/lena.svg';
     const JSON_FILE = 'data/bigdata.json';
 
-    let logger = (/* String */ log) => document.getElementById('log').text = new Date().toTimeString() + ': ' + log;
+    let logger = (/* String */ log) => {
+        let date = new Date();
+        let logElem = document.getElementById('log');
+        logElem.value += date.toLocaleDateString() + ' ' + date.toLocaleTimeString() + ': ' + log + '\r\n';
+    };
 
     /*-----------------------------------------------------------------------*\
-     * Edge Async
+     * Async
     \*-----------------------------------------------------------------------*/
-    let edgeAsync = document.getElementById('edgeAsync');
-    edgeAsync.onclick = async () => {
+    let async = document.getElementById('edgeAsync');
+    async.onclick = async () => {
+
         /* SVG */
         logger('[START] Edge Async SVG');
         let responseSvg = await httpGetSvg(SVG_FILE);
         logger('[END] Edge Async SVG');
+
         let svg = document.getElementById('svg');
         svg.innerHTML = responseSvg;
 
+
         /* JSON */
+        logger('[START] Edge Async JSON');
         let responseJson = await httpGetJson(JSON_FILE);
+        logger('[END] Edge Async JSON');
+
         let json = document.getElementById('json');
         json.innerText = responseJson;
     };
 
     /*-----------------------------------------------------------------------*\
-     * Edge Sync
+     * Sync
     \*-----------------------------------------------------------------------*/
+    let sync = document.getElementById('edgeSync');
+    sync.onclick = () => {
+
+        /* SVG */
+        logger('[START] Edge Sync SVG');
+        httpGetSvg(SVG_FILE).then(function (responseSvg) {
+            logger('[END] Edge Sync SVG');
+
+            let svg = document.getElementById('svg');
+            svg.innerHTML = responseSvg;
+        }).catch(function (error) {
+            logger(error);
+        });
+
+
+        /* JSON */
+        logger('[START] Edge Sync JSON');
+        httpGetJson(JSON_FILE).then(function (responseJson) {
+            logger('[END] Edge Sync JSON');
+
+            let json = document.getElementById('json');
+            json.innerText = responseJson;
+        }).catch(function (error) {
+            logger(error);
+        });;
+
+    };
 }

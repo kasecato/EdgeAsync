@@ -13,11 +13,12 @@ var js_edge_dir = [
 ];
 
 var js_babel_dir = [
-    'src/js/babel/**/*.js'
+    'node_modules/requirejs/bin/r.js'
+  , 'src/js/babel/**/*.js'
 ];
 
 var css_dir = [
-    'node_modules/bootstrap/dist/css/bootstrap.css'
+    'node_modules/bootstrap/dist/css/bootstrap.min.css'
   , 'src/css/style.css'
 ];
 
@@ -27,6 +28,10 @@ var html_dir = [
 
 var data_dir = [
     'src/data/**/*'
+];
+
+var babel_runtime_dir = [
+    'node_modules/babel-runtime/**/*'
 ];
 
 // ESLint Task
@@ -84,14 +89,21 @@ gulp.task('data', function() {
         .pipe(gulp.dest('dist/data'))
 });
 
+
+// Copy babel-runtime
+gulp.task('babel-runtime', function() {
+    gulp.src(babel_runtime_dir)
+        .pipe(gulp.dest('dist/babel-runtime'))
+});
+
 // Watch
 gulp.task('watch', function(){
-    gulp.watch(js_edge_dir, ['default']);
-    gulp.watch(js_babel_dir, ['default']);
-    gulp.watch(css_dir, ['default']);
-    gulp.watch(html_dir, ['default']);
+    gulp.watch(js_edge_dir, [/*'lint',*/ 'js-edge']);
+    gulp.watch(js_babel_dir, [/*'lint',*/ 'js-babel']);
+    gulp.watch(css_dir, ['css']);
+    gulp.watch(html_dir, ['html']);
 });
 
 // Default Task
-gulp.task('default', [/*'lint',*/ 'js-edge', 'js-babel', 'css', 'html', 'data']);
+gulp.task('default', [/*'lint',*/ 'js-edge', 'js-babel', 'css', 'html', 'data', 'babel-runtime', 'watch']);
 
