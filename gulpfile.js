@@ -12,10 +12,6 @@ var htmlmin = require('gulp-html-minifier');
 var minifycss = require('gulp-minify-css');
 var sourcemaps = require('gulp-sourcemaps');
 
-var js_main_dir = [
-    'src/js/util/**/*.js'
-];
-
 var js_edge_dir = [
     'src/js/edge/**/*.js'
 ];
@@ -43,17 +39,6 @@ gulp.task('lint', function () {
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failOnError());
-});
-
-// Main Concatenate & Minify JS
-gulp.task('js-main', function () {
-    return gulp.src(js_main_dir)
-        .pipe(concat('all.main.js'))
-        .pipe(gulp.dest('dist/js'))
-        //.pipe(rename('all.main.min.js'))
-        //.pipe(uglify())
-        //.pipe(gulp.dest('dist/js'))
-        ;
 });
 
 // Edge Concatenate & Minify JS
@@ -108,7 +93,6 @@ gulp.task('data', function() {
 
 // Watch
 gulp.task('watch', function(){
-    gulp.watch(js_main_dir, [/*'lint',*/ 'js-main']);
     gulp.watch(js_edge_dir, [/*'lint',*/ 'js-edge']);
     gulp.watch(js_babel_src, [/*'lint',*/ 'js-babel']);
     gulp.watch(css_dir, ['css']);
@@ -118,8 +102,7 @@ gulp.task('watch', function(){
 // Default Task
 gulp.task('default', [
     /*'lint',*/
-    'js-main'
-  , 'js-edge'
+    'js-edge'
   , 'js-babel'
   , 'css'
   , 'html'

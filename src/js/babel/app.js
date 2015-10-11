@@ -1,13 +1,12 @@
 // ES7 code, with async/await
-async function httpGetBabelAsync(url) {
-    // check if the URL looks like a SVG or JSON file and call httpGet.
-    let regex = /\.(svg|json)$/i;
-
-    if (regex.test(url)) {
-        // call the async function, wait for the result
-        return await httpUtil.httpGet(url);
+async function xhrBabelAsync(/* String */ url) {
+    let request = new XMLHttpRequest();
+    await request.open('GET', url, false);
+    await request.send();
+    if (request.status == 200) {
+        return request.responseText;
     } else {
-        throw Error('Bad Url Format');
+        throw Error(request.statusText);
     }
 }
 
@@ -39,7 +38,7 @@ window.addEventListener("load", function() {
         /* SVG */
         logger('[START] Async SVG');
         try {
-            const responseSvg = await httpGetBabelAsync(SVG_FILE);
+            const responseSvg = await xhrBabelAsync(SVG_FILE);
             logger('[END] Async SVG');
 
             svg.innerHTML = responseSvg;
@@ -51,7 +50,7 @@ window.addEventListener("load", function() {
         /* JSON */
         logger('[START] Async JSON');
         try {
-            const responseJson = await httpGetBabelAsync(JSON_FILE);
+            const responseJson = await xhrBabelAsync(JSON_FILE);
             logger('[END] Async JSON');
 
             json.innerText = responseJson;
@@ -72,7 +71,7 @@ window.addEventListener("load", function() {
 
         /* SVG */
         logger('[START] Sync SVG');
-        httpGetBabelAsync(SVG_FILE).then(function (responseSvg) {
+        xhrBabelAsync(SVG_FILE).then(function (responseSvg) {
             logger('[END] Sync SVG');
 
             svg.innerHTML = responseSvg;
@@ -83,7 +82,7 @@ window.addEventListener("load", function() {
 
         /* JSON */
         logger('[START] Sync JSON');
-        httpGetBabelAsync(JSON_FILE).then(function (responseJson) {
+        xhrBabelAsync(JSON_FILE).then(function (responseJson) {
             logger('[END] Sync JSON');
 
             json.innerText = responseJson;
