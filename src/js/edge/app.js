@@ -1,98 +1,80 @@
 // ES7 code, with async/await
-function httpGet(url) {
-    return new Promise(function (resolve, reject) {
-        // do the usual Http request
-        let request = new XMLHttpRequest();
-        request.open('GET', url);
-
-        request.onload = function () {
-            if (request.status == 200) {
-                resolve(request.response);
-            } else {
-                reject(Error(request.statusText));
-            }
-        };
-
-        request.onerror = function () {
-            reject(Error('Network Error'));
-        };
-
-        request.send();
-    });
-}
-
-async function httpGetSvg(url) {
-    // check if the URL looks like a SVG file and call httpGet.
-    let regex = /\.(svg)$/i;
+async function httpGetEdgeAsync(url) {
+    // check if the URL looks like a SVG or JSON file and call httpGet.
+    let regex = /\.(svg|json)$/i;
 
     if (regex.test(url)) {
         // call the async function, wait for the result
-        return await httpGet(url);
+        return await httpUtil.httpGet(url);
     } else {
         throw Error('Bad Url Format');
     }
 }
 
-async function httpGetJson(url) {
-    // check if the URL looks like a JSON file and call httpGet.
-    let regex = /\.(json)$/i;
-
-    if (regex.test(url)) {
-        // call the async function, wait for the result
-        return await httpGet(url);
-    } else {
-        throw Error('Bad Url Format');
-    }
-}
-
-
-window.onload = function () {
+window.addEventListener("load", function() {
 
     const SVG_FILE = 'data/lena.svg';
     const JSON_FILE = 'data/bigdata.json';
 
-    let logger = (/* String */ log) => {
+    const svg = document.getElementById('svg');
+    const json = document.getElementById('json');
+    const log = document.getElementById('log');
+
+    const logger = (/* String */ mess) => {
         let date = new Date();
-        let logElem = document.getElementById('log');
-        logElem.value += date.toLocaleDateString() + ' ' + date.toLocaleTimeString() + ': ' + log + '\r\n';
+        log.value += '[EDGE]\t' + date.toLocaleDateString() + ' ' + date.toLocaleTimeString() + ': ' + mess + '\r\n';
+        log.scrollTop = log.scrollHeight;
     };
 
     /*-----------------------------------------------------------------------*\
      * Async
-    \*-----------------------------------------------------------------------*/
-    let async = document.getElementById('edgeAsync');
-    async.onclick = async () => {
+     \*-----------------------------------------------------------------------*/
+    const edgeAsync = document.getElementById('edgeAsync');
+    edgeAsync.onclick = async () => {
+
+        // clear
+        svg.innerHTML = '';
+        json.innerText = '';
 
         /* SVG */
-        logger('[START] Edge Async SVG');
-        let responseSvg = await httpGetSvg(SVG_FILE);
-        logger('[END] Edge Async SVG');
+        logger('[START] Async SVG');
+        try {
+            const responseSvg = await httpGetEdgeAsync(SVG_FILE);
+            logger('[END] Async SVG');
 
-        let svg = document.getElementById('svg');
-        svg.innerHTML = responseSvg;
+            svg.innerHTML = responseSvg;
+        } catch (e) {
+            logger('[END] Async SVG Error ' + e);
+        }
 
 
         /* JSON */
-        logger('[START] Edge Async JSON');
-        let responseJson = await httpGetJson(JSON_FILE);
-        logger('[END] Edge Async JSON');
+        logger('[START] Async JSON');
+        try {
+            const responseJson = await httpGetEdgeAsync(JSON_FILE);
+            logger('[END] Async JSON');
 
-        let json = document.getElementById('json');
-        json.innerText = responseJson;
+            json.innerText = responseJson;
+        } catch (e) {
+            logger('[END] Async SVG Error ' + e);
+        }
     };
 
     /*-----------------------------------------------------------------------*\
      * Sync
-    \*-----------------------------------------------------------------------*/
-    let sync = document.getElementById('edgeSync');
-    sync.onclick = () => {
+     \*-----------------------------------------------------------------------*/
+    const edgeSync = document.getElementById('edgeSync');
+    edgeSync.onclick = () => {
+
+        // clear
+        svg.innerHTML = '';
+        json.innerText = '';
 
         /* SVG */
-        logger('[START] Edge Sync SVG');
-        httpGetSvg(SVG_FILE).then(function (responseSvg) {
-            logger('[END] Edge Sync SVG');
+        logger('[START] Sync SVG');
+        httpGetEdgeAsync(SVG_FILE).then(function (responseSvg) {
+            logger('[END] Sync SVG');
 
-            let svg = document.getElementById('svg');
             svg.innerHTML = responseSvg;
         }).catch(function (error) {
             logger(error);
@@ -100,15 +82,15 @@ window.onload = function () {
 
 
         /* JSON */
-        logger('[START] Edge Sync JSON');
-        httpGetJson(JSON_FILE).then(function (responseJson) {
-            logger('[END] Edge Sync JSON');
+        logger('[START] Sync JSON');
+        httpGetEdgeAsync(JSON_FILE).then(function (responseJson) {
+            logger('[END] Sync JSON');
 
-            let json = document.getElementById('json');
             json.innerText = responseJson;
         }).catch(function (error) {
             logger(error);
-        });;
+        });
 
     };
-}
+
+}, false);
