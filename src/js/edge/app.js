@@ -1,13 +1,12 @@
 // ES7 code, with async/await
-async function httpGetEdgeAsync(url) {
-    // check if the URL looks like a SVG or JSON file and call httpGet.
-    let regex = /\.(svg|json)$/i;
-
-    if (regex.test(url)) {
-        // call the async function, wait for the result
-        return await httpUtil.httpGet(url);
+async function xhrEdgeAsync(/* String */ url) {
+    let request = new XMLHttpRequest();
+    await request.open('GET', url, false);
+    await request.send();
+    if (request.status == 200) {
+        return request.responseText;
     } else {
-        throw Error('Bad Url Format');
+        throw Error(request.statusText);
     }
 }
 
@@ -28,7 +27,7 @@ window.addEventListener("load", function() {
 
     /*-----------------------------------------------------------------------*\
      * Async
-     \*-----------------------------------------------------------------------*/
+    \*-----------------------------------------------------------------------*/
     const edgeAsync = document.getElementById('edgeAsync');
     edgeAsync.onclick = async () => {
 
@@ -39,7 +38,7 @@ window.addEventListener("load", function() {
         /* SVG */
         logger('[START] Async SVG');
         try {
-            const responseSvg = await httpGetEdgeAsync(SVG_FILE);
+            const responseSvg = await xhrEdgeAsync(SVG_FILE);
             logger('[END] Async SVG');
 
             svg.innerHTML = responseSvg;
@@ -51,7 +50,7 @@ window.addEventListener("load", function() {
         /* JSON */
         logger('[START] Async JSON');
         try {
-            const responseJson = await httpGetEdgeAsync(JSON_FILE);
+            const responseJson = await xhrEdgeAsync(JSON_FILE);
             logger('[END] Async JSON');
 
             json.innerText = responseJson;
@@ -62,7 +61,7 @@ window.addEventListener("load", function() {
 
     /*-----------------------------------------------------------------------*\
      * Sync
-     \*-----------------------------------------------------------------------*/
+    \*-----------------------------------------------------------------------*/
     const edgeSync = document.getElementById('edgeSync');
     edgeSync.onclick = () => {
 
@@ -72,7 +71,7 @@ window.addEventListener("load", function() {
 
         /* SVG */
         logger('[START] Sync SVG');
-        httpGetEdgeAsync(SVG_FILE).then(function (responseSvg) {
+        xhrEdgeAsync(SVG_FILE).then(function (responseSvg) {
             logger('[END] Sync SVG');
 
             svg.innerHTML = responseSvg;
@@ -83,7 +82,7 @@ window.addEventListener("load", function() {
 
         /* JSON */
         logger('[START] Sync JSON');
-        httpGetEdgeAsync(JSON_FILE).then(function (responseJson) {
+        xhrEdgeAsync(JSON_FILE).then(function (responseJson) {
             logger('[END] Sync JSON');
 
             json.innerText = responseJson;
