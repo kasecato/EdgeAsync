@@ -4,9 +4,11 @@
   "description": "Edge Native Async vs Babel Transpiler Async Functions",
   "main": "gulpfile.js",
   "dependencies": {
+    "bootstrap": "^3.3.5"
+  },
+  "devDependencies": {
     "babel": "^5.8.23",
     "browserify": "^11.2.0",
-    "bootstrap": "^3.3.5",
     "babelify": "^6.3.0",
     "gulp": "^3.9.0",
     "gulp-html-minifier": "^0.1.6",
@@ -20,9 +22,8 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "gulp": "gulp"
   },
   "repository": {
     "type": "git",
